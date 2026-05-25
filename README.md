@@ -74,7 +74,8 @@ ADLS Gen2 - Silver Container
 ```
 metadata-driven-ingestion/
 │
-├── nb_bronze_mdif_ingestion.ipynb        # Main ingestion notebook
+├── notebook/
+│   └── nb_bronze_mdif_ingestion.ipynb    # Main ingestion notebook
 │
 ├── config/
 │   └── purchase_orders/
