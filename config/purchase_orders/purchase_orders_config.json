@@ -1,0 +1,158 @@
+{
+	"landing_to_bronze": {
+		"source": {
+			"read_as": "stream",
+			"data_layer": "landing",
+			"storage_account": "stgipcemeapoc",
+			"container": "landing",
+			"relative_path": "PurchaseOrder/*/*/*/*",
+			"infer_schema": "infer",
+			"schema": {},
+			"type": "file",
+			"format": "text",
+			"multiline": true,
+			"transformations": [
+				{
+					"order": 1,
+					"action": "rename_column",
+					"column_name": "value",
+					"alias": "data"
+				},
+				{
+					"order": 2,
+					"action": "add_column",
+					"column_name": "file_name",
+					"tranformation_type": "eval",
+					"transformation_expression": "split(input_file_name(), '/').getItem(8)"
+				},
+				{
+					"order": 6,
+					"action": "add_column",
+					"column_name": "batch_year",
+					"tranformation_type": "eval",
+					"transformation_expression": "split(input_file_name(), '/').getItem(4)"
+				},
+				{
+					"order": 5,
+					"action": "add_column",
+					"column_name": "batch_month",
+					"tranformation_type": "eval",
+					"transformation_expression": "split(input_file_name(), '/').getItem(5)"
+				},
+				{
+					"order": 4,
+					"action": "add_column",
+					"column_name": "batch_day",
+					"tranformation_type": "eval",
+					"transformation_expression": "split(input_file_name(), '/').getItem(6)"
+				},
+				{
+					"order": 3,
+					"action": "add_column",
+					"column_name": "batch_id",
+					"tranformation_type": "eval",
+					"transformation_expression": "split(input_file_name(), '/').getItem(7)"
+				}
+			]
+		},
+		"target": {
+			"data_layer": "bronze",
+			"targets": [
+				{
+					"order": 1,
+					"write_as": "stream",
+					"storage_account": "stgipcemeapoc",
+					"container": "bronze",
+					"relative_path": "purchase_orders_mdif",
+					"type": "table",
+					"format": "delta",
+					"db": "bronze",
+					"table": "purchase_orders_mdif",
+					"mode": "append",
+					"source_to_target_mapping": {
+						"data": "data",
+						"batch_year": "batch_year",
+						"batch_month": "batch_month",
+						"batch_day": "batch_day",
+						"batch_id": "batch_id",
+						"file_name": "file_name"
+					},
+					"partition_cols": [
+						"batch_year",
+						"batch_month",
+						"batch_day",
+						"batch_id"
+					]
+				}
+			]
+		}
+	},
+	"bronze_to_silver_staging": {
+		"source": {
+			"read_as": "stream",
+			"data_layer": "bronze",
+			"storage_account": "stgipcemeapoc",
+			"container": "bronze",
+			"relative_path": "purchase_orders",
+			"infer_schema": "infer",
+			"type": "table",
+			"format": "delta"
+		},
+		"target": {
+			"data_layer": "silver-staging",
+			"targets": [
+				{
+					"order": 1,
+					"write_as": "stream",
+					"storage_account": "stgipcemeapoc",
+					"container": "silver-staging",
+					"relative_path": "purchase_orders_mdif",
+					"type": "table",
+					"format": "delta",
+					"db": "silver_staging",
+					"table": "purchase_orders_mdif",
+					"mode": "append",
+					"validate_schema": true,
+					"flatten": true,
+					"prefix_remove": "data.",
+					"explode_columns": [
+						"order_details__items"
+					],
+					"source_to_target_mapping": {
+						"order_type": "order_type",
+						"marketplace_order_id": "marketplace_order_id",
+						"distributor": "distributor",
+						"supplier_code": "supplier_code",
+						"order_details__order_create_date": "order_create_date",
+						"order_details__promised_delivery_date": "promised_delivery_date",
+						"order_details__promised_shipment_date": "promised_shipment_date",
+						"order_details__distributor_GLN": "distributor_gln",
+						"order_details__billing_address__state": "billing_address_state",
+						"order_details__billing_address__street": "billing_address_street",
+						"order_details__billing_address__country": "billing_address_country",
+						"order_details__billing_address__postcode": "billing_address_postcode",
+						"order_details__delivery_address__country": "delivery_address_country",
+						"order_details__delivery_address__address1": "delivery_address_address1",
+						"order_details__delivery_address__address2": "delivery_address_address2",
+						"order_details__delivery_address__postcode": "delivery_address_postcode",
+						"order_details__items__gtin": "items_gtin",
+						"order_details__items__unit_price_exl_tax": "items_unit_price_exl_tax",
+						"order_details__items__qty": "items_qty",
+						"products": "products",
+						"batch_year": "batch_year",
+						"batch_month": "batch_month",
+						"batch_day": "batch_day",
+						"batch_id": "batch_id",
+						"file_name": "file_name"
+					},
+					"partition_cols": [
+						"batch_year",
+						"batch_month",
+						"batch_day",
+						"batch_id"
+					]
+				}
+			]
+		}
+	}
+}

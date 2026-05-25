@@ -1,0 +1,35 @@
+StructType([
+    StructField("distributor", StringType()),
+    StructField("marketplace_order_id", StringType()),
+    StructField("order_details", StructType([
+        StructField("billing_address", StructType([
+            StructField("country", StringType()),
+            StructField("postcode", StringType()),
+            StructField("state", StringType()),
+            StructField("street", StringType())
+        ])),
+        StructField("delivery_address", StructType([
+            StructField("address1", StringType()),
+            StructField("address2", StringType()),
+            StructField("country", StringType()),
+            StructField("postcode", StringType())
+        ])),
+        StructField("distributor_GLN", StringType()),
+        StructField("items", ArrayType(StructType([
+            StructField("gtin", StringType()),
+            StructField("qty", StringType()),
+            StructField("unit_price_exl_tax", StringType())
+        ]))),
+        StructField("order_create_date", StringType()),
+        StructField("promised_delivery_date", StringType()),
+        StructField("promised_shipment_date", StringType())
+    ])),
+    StructField("order_type", StringType()),
+    StructField("products", ArrayType(LongType())),
+    StructField("supplier_code", StringType()),
+	StructField("batch_year", StringType()),
+	StructField("batch_month", StringType()),
+	StructField("batch_day", StringType()),
+	StructField("batch_id", StringType()),
+	StructField("file_name", StringType())
+])
