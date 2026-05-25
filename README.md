@@ -1,12 +1,12 @@
 # Metadata-Driven Ingestion Framework (MDIF)
 
-A configurable, reusable data ingestion framework built on **PySpark** that moves data across layers of a data lakehouse using a JSON-based configuration file — eliminating hardcoded pipeline logic.
+A configurable, reusable data ingestion framework built on **PySpark** that moves data across layers of a data lakehouse using a JSON-based configuration file, eliminating hardcoded pipeline logic.
 
 ---
 
 ## Overview
 
-The MDIF (Metadata-Driven Ingestion Framework) is designed to handle multi-stage data ingestion in a lakehouse architecture. Instead of writing a separate pipeline for each dataset, all pipeline behaviour — source paths, target paths, transformations, schema validation, partitioning — is driven by a single JSON config file.
+The MDIF (Metadata-Driven Ingestion Framework) is designed to handle multi-stage data ingestion in a lakehouse architecture. Instead of writing a separate pipeline for each dataset, all pipeline behaviour - source paths, target paths, transformations, schema validation, partitioning - is driven by a single JSON config file.
 
 The framework supports two ingestion stages out of the box:
 
@@ -55,7 +55,7 @@ ADLS Gen2 - Silver Container
 
 | Feature | Description |
 |---|---|
-| Config-driven | All pipeline behaviour controlled via a JSON config file — no hardcoded logic |
+| Config-driven | All pipeline behaviour controlled via a JSON config file - no hardcoded logic |
 | Multi-stage | Supports Landing→Bronze and Bronze→Silver Staging in a single notebook run |
 | Dynamic transformations | Ordered `rename_column` and `add_column` (eval-based) actions per config |
 | JSON flattening | Recursively flattens nested `StructType` columns with `__` separator and optional prefix removal |
@@ -255,7 +255,7 @@ Any field present in the incoming data but absent from this schema is flagged as
 
 ---
 
-## Silver Staging — Output Schema
+## Silver Staging - Output Schema
 
 After flattening and renaming, the Silver Staging table contains the following columns:
 
@@ -310,7 +310,7 @@ Schema violations are written to `silver.error_table_mdif`:
 
 | Function | Description |
 |---|---|
-| `run_mdif(config, stage)` | Main orchestrator — reads config, ingests, transforms, and writes data for a given stage |
+| `run_mdif(config, stage)` | Main orchestrator - reads config, ingests, transforms, and writes data for a given stage |
 | `transform_df(df, transformations)` | Applies ordered transformations (rename/add columns) from config |
 | `flatten_df(df, prefix_remove)` | Recursively flattens nested `StructType` columns, joining names with `__` |
 | `explode_columns(df, columns)` | Explodes `ArrayType` columns and flattens `StructType` columns |
@@ -343,7 +343,7 @@ mdif_schema_relative_path = "purchase_orders/purchase_orders_schema.txt"
 batch_id                  = "<your-batch-id>"
 ```
 
-4. Run the notebook — it executes both stages sequentially:
+4. Run the notebook - it executes both stages sequentially:
 
 ```python
 run_mdif(config_df, mdif_bronze_stage)   # Landing → Bronze
